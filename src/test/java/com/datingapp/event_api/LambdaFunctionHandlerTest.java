@@ -40,4 +40,15 @@ public class LambdaFunctionHandlerTest {
         // TODO: validate output here if needed.
         Assert.assertEquals("Hello from Lambda!", output);
     }
+    
+    @Test
+    public void testYelpEventFunctionHandler() {
+    	YelpEventHandler handler = new YelpEventHandler();
+        Context ctx = createContext();
+
+        String output = handler.handleRequest("Qn10NEhycm3k5HQoueDYSQ", ctx);
+        System.out.println(output);
+        // TODO: validate output here if needed.
+       // Assert.assertEquals("Hello from Lambda!", output);
+    }
 }

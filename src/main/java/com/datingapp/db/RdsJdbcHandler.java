@@ -6,6 +6,8 @@ package com.datingapp.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Haiwei
@@ -40,5 +42,7 @@ public abstract class RdsJdbcHandler implements JdbcHandler {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public abstract String getDataObject(Map<String,Object> map); 
+	
 }

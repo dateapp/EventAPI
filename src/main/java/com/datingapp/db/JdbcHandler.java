@@ -1,10 +1,11 @@
 package com.datingapp.db;
 
+import java.util.List;
+import java.util.Map;
+
 public interface JdbcHandler {
 	
 	public boolean save(Object e);
-	
-	Object getDataObject(Object... objects); 
 	
     void getConnection();
 	
