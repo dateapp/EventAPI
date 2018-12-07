@@ -1,6 +1,8 @@
 package com.datingapp.event_api;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -47,6 +49,19 @@ public class LambdaFunctionHandlerTest {
         Context ctx = createContext();
 
         String output = handler.handleRequest("Qn10NEhycm3k5HQoueDYSQ", ctx);
+        System.out.println(output);
+        // TODO: validate output here if needed.
+       // Assert.assertEquals("Hello from Lambda!", output);
+    }
+    
+    @Test
+    public void testEventSearchByIdFunctionHandler() {
+    	EventSearchByIdHandler handler = new EventSearchByIdHandler();
+        Context ctx = createContext();
+        Map<Object,Object> map = new HashMap<Object,Object>();
+        map.put("eventId", "42664432466");
+        map.put("eventSource", "EventBrite");
+        String output = handler.handleRequest(map, ctx);
         System.out.println(output);
         // TODO: validate output here if needed.
        // Assert.assertEquals("Hello from Lambda!", output);
