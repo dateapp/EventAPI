@@ -1,28 +1,19 @@
 package com.datingapp.db;
 
-
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.json.JSONArray;
 
-import com.google.gson.Gson;
-import com.datingapp.eb.model.Event;
 import com.datingapp.services.LocationService;
-import com.datingapp.util.ResultSetAdapter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 
 public class EventDAOImpl extends RdsJdbcHandler {
-	
-	private LocationService  locationService = new LocationService();
+
+	private LocationService locationService = new LocationService();
 
 	public EventDAOImpl() {
 		super();
@@ -59,11 +50,11 @@ public class EventDAOImpl extends RdsJdbcHandler {
 		}
 		sb.delete(sb.length() - 5, sb.length());
 		sb.append(";");
-        List<Map<String, Object>> listOfMaps = null;
+		List<Map<String, Object>> listOfMaps = null;
 		try {
 			QueryRunner queryRunner = new QueryRunner();
-            listOfMaps = queryRunner.query(this.dbconnection, sb.toString(), new MapListHandler());
-			if(listOfMaps!=null) {
+			listOfMaps = queryRunner.query(this.dbconnection, sb.toString(), new MapListHandler());
+			if (listOfMaps != null) {
 				return new Gson().toJson(listOfMaps);
 			}
 		} catch (Exception e) {
@@ -78,40 +69,35 @@ public class EventDAOImpl extends RdsJdbcHandler {
 	 * 
 	 * @return
 	 */
-	public String getEventCategories(String categoryName,String zipcode) {
+	public String getEventCategories(String categoryName, String zipcode) {
 		List<String> nearByZipcodes = new ArrayList<String>();
-		
 		StringBuilder categorySearchBuilder = new StringBuilder();
 		addListOfColumns(categorySearchBuilder);
 		categorySearchBuilder.append(" upper(trim(category_name)) like");
 		categorySearchBuilder.append(" '%");
 		categorySearchBuilder.append(categoryName != null ? categoryName.trim().toUpperCase() : " ");
 		categorySearchBuilder.append(" %' ");
-		if(zipcode!=null) {
+		if (zipcode != null) {
 			nearByZipcodes = locationService.nearbyZipcodesTo(zipcode);
 			categorySearchBuilder.append("   AND zip_code in (  ");
-			for(int i=0 ; i < nearByZipcodes.size() ; i++) {
-				if(i == nearByZipcodes.size() - 1) {
-					categorySearchBuilder.append( "'"+ nearByZipcodes.get(i) 	+ "'" + "  ");	
+			for (int i = 0; i < nearByZipcodes.size(); i++) {
+				if (i == nearByZipcodes.size() - 1) {
+					categorySearchBuilder.append("'" + nearByZipcodes.get(i) + "'" + "  ");
 				} else {
-					categorySearchBuilder.append( "'"+ nearByZipcodes.get(i) 	+ "'" + ",");
+					categorySearchBuilder.append("'" + nearByZipcodes.get(i) + "'" + ",");
 				}
-				
+
 			}
 			categorySearchBuilder.append("  ) ");
-			
-		}
 
+		}
 		categorySearchBuilder.append(";");
-		
-		Statement statement;
+		List<Map<String, Object>> listOfMaps = null;
 		try {
-			getConnection();
-			statement = this.dbconnection.createStatement();
-			ResultSet results = statement.executeQuery(categorySearchBuilder.toString());
-			if (results != null) {
-				JSONArray array = ResultSetAdapter.convertToJSON(results);
-				return array.toString();
+			QueryRunner queryRunner = new QueryRunner();
+			listOfMaps = queryRunner.query(this.dbconnection, categorySearchBuilder.toString(), new MapListHandler());
+			if (listOfMaps != null) {
+				return new Gson().toJson(listOfMaps);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -129,6 +115,4 @@ public class EventDAOImpl extends RdsJdbcHandler {
 		sb.append("Select " + listOfColumns + " from event where ");
 	}
 
-	
-	
 }
