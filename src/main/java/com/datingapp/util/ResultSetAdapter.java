@@ -2,6 +2,9 @@ package com.datingapp.util;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.google.gson.Gson;
+
 import java.sql.ResultSet;
 /**
  * Utility for converting ResultSets into some Output formats

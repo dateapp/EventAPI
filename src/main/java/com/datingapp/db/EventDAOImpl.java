@@ -1,13 +1,13 @@
 package com.datingapp.db;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.MapListHandler;
 
-import com.datingapp.util.ResultSetAdapter;
+import com.google.gson.Gson;
 
 public class EventDAOImpl extends RdsJdbcHandler{
 
@@ -48,14 +48,12 @@ public class EventDAOImpl extends RdsJdbcHandler{
 		}
 		sb.delete(sb.length() - 5, sb.length());
 		sb.append(";");
-		
-		Statement statement;
+        List<Map<String, Object>> listOfMaps = null;
 		try {
-			statement = this.dbconnection.createStatement();
-			ResultSet results = statement.executeQuery(sb.toString());
-			if(results!=null) {
-				JSONArray array = ResultSetAdapter.convertToJSON(results);
-				return array.toString();
+			QueryRunner queryRunner = new QueryRunner();
+            listOfMaps = queryRunner.query(this.dbconnection, sb.toString(), new MapListHandler());
+			if(listOfMaps!=null) {
+				return new Gson().toJson(listOfMaps);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
